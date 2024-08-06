@@ -5,7 +5,6 @@
 #include <sys/wait.h>
 
 char** commandToAv(char* BUFFER){
-        size_t BUFF_SIZE = 32;
         size_t WORD_SIZE = 10;
 
         char* word = (char*) malloc(WORD_SIZE * sizeof(char));
@@ -42,22 +41,26 @@ int main(){
         BUFFER = (char*) malloc(BUFF_SIZE * sizeof(char));
 
         while (1){
-                printf("$ ");
+                printf("#cisfun$ ");
                 x = getline(&BUFFER, &BUFF_SIZE, stdin);
-		if (x == -1)
+		if ((int)x == -1){
 			printf("\n");
                         return 0;
+		}
 
 		av = commandToAv(BUFFER);
 
 		cur = fork();
-		if (cur == -1)
-			perror("Error:fork:");
+		if (cur == -1){
+			fprintf(stderr, "./shell: ");
+                        perror("");
+		}
 		else if (cur == 0)
 		{
 			if (execve(av[0], av, NULL) == -1)
         		{
-                		perror("Error:execve:");
+                		fprintf(stderr, "./shell: ");
+        			perror("");
         		}
 		}
 		wait(&status);
